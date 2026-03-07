@@ -577,7 +577,7 @@ void drawEidScreen(DateTime& now) {
 
     const char* months[] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
     char dateBuf[26];
-    snprintf(dateBuf, sizeof(dateBuf), "Eid ul-Fitr %d %s %d",
+    snprintf(dateBuf, sizeof(dateBuf), "Eid %d %s %d",
              EID_DAY, months[EID_MONTH-1], EID_YEAR);
     drawCenteredText(dateBuf, 54);
   }
