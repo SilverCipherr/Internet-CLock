@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internet Clock — Full Wiring Diagram</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0b0e12;
+      font-family: 'Share Tech Mono', monospace;
+      color: #ddeeff;
+      padding-bottom: 60px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(#1a2535 1px, transparent 1px);
+      background-size: 22px 22px;
+      opacity: .35;
+      pointer-events: none;
+    }
+
+    header {
+      text-align: center;
+      padding: 26px 20px 14px;
+      background: linear-gradient(180deg, #0d1522 0%, transparent 100%);
+      border-bottom: 1px solid #151f2e;
+    }
+
+    header h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(15px, 3vw, 26px);
+      font-weight: 900;
+      color: #e0f4ff;
+      letter-spacing: 5px;
+      text-shadow: 0 0 24px #00e5ff44;
+    }
+
+    header p {
+      font-size: 10px;
+      color: #2a4a60;
+      letter-spacing: 3px;
+      margin-top: 5px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 18px;
+      padding: 14px 20px;
+      border-bottom: 1px solid #151f2e;
+      background: #080c12;
+    }
+
+    .leg {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+
+    .lw {
+      width: 32px;
+      height: 4px;
+      border-radius: 3px;
+    }
+
+    .svg-wrap {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 24px 12px;
+    }
+
+    .main-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .notes {
+      max-width: 1100px;
+      margin: 20px auto 0;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .note {
+      background: #080c12;
+      border: 1px solid #151f2e;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 10px;
+      line-height: 1.8;
+    }
+
+    .note b {
+      display: block;
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+
+    .note.warn b {
+      color: #ffaa00;
+    }
+
+    .note.info b {
+      color: #44ccff;
+    }
+
+    .note.tip b {
+      color: #44ff88;
+    }
+
+    .note p {
+      color: #3a5a70;
+    }
+
+    .note strong {
+      color: #c0d8e8;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>INTERNET CLOCK — FULL WIRING DIAGRAM</h1>
+    <p>ESP32 · DS3231 · SSD1306 OLED · Buck Converter · Buttons · 10kΩ Pull-ups</p>
+  </header>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="leg">
+      <div class="lw" style="background:#ff2222"></div><span style="color:#ff6666">5V Power</span>
+    </div>
+    <div class="leg">
+      <div class="lw" style="background:#ff6600"></div><span style="color:#ff9955">3.3V VCC</span>
+    </div>
+    <div class="leg">
+      <div class="lw" style="background:#888888"></div><span style="color:#aaaaaa">GND</span>
+    </div>
+    <div class="leg">
+      <div class="lw" style="background:#00ddff"></div><span style="color:#00ddff">SDA · GPIO 21</span>
+    </div>
+    <div class="leg">
+      <div class="lw" style="background:#ffdd00"></div><span style="color:#ffdd00">SCL · GPIO 22</span>
+    </div>
+    <div class="leg">
+      <div class="lw" style="background:#ff44cc"></div><span style="color:#ff44cc">GPIO 34 · Btn 1</span>
+    </div>
+    <div class="leg">
+      <div class="lw" style="background:#aa44ff"></div><span style="color:#aa44ff">GPIO 35 · Btn 2</span>
+    </div>
+    <div class="leg">
+      <div class="lw" style="background:#ff8800" style="border:1px dashed #ffaa44"></div><span
+        style="color:#ffaa44">Battery / Buck</span>
+    </div>
+  </div>
+
+  <div class="svg-wrap">
+    <svg class="main-svg" viewBox="0 0 1380 1020" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="glow-cyan" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="2.5" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <filter id="glow-green" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="2" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <!-- Arrow markers — one per color -->
+        <marker id="m-red" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <polygon points="0,0 8,4 0,8" fill="#ff2222" />
+        </marker>
+        <marker id="m-org" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <polygon points="0,0 8,4 0,8" fill="#ff6600" />
+        </marker>
+        <marker id="m-gnd" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <polygon points="0,0 8,4 0,8" fill="#888888" />
+        </marker>
+        <marker id="m-sda" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <polygon points="0,0 8,4 0,8" fill="#00ddff" />
+        </marker>
+        <marker id="m-scl" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <polygon points="0,0 8,4 0,8" fill="#ffdd00" />
+        </marker>
+        <marker id="m-buz" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <polygon points="0,0 8,4 0,8" fill="#44ff44" />
+        </marker>
+        <marker id="m-btn1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <polygon points="0,0 8,4 0,8" fill="#ff44cc" />
+        </marker>
+        <marker id="m-btn2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <polygon points="0,0 8,4 0,8" fill="#aa44ff" />
+        </marker>
+      </defs>
+
+      <!-- ═══════════════════════════════
+     BREADBOARD 1  (LEFT HALF)
+     ESP32 + Power Section
+════════════════════════════════ -->
+      <rect x="14" y="38" width="580" height="610" rx="10" fill="#111820" stroke="#1e3040" stroke-width="2" />
+      <text x="304" y="60" text-anchor="middle" font-size="11" fill="#1e3a50" letter-spacing="3"
+        font-family="'Orbitron',monospace">BREADBOARD 1 — ESP32 + POWER</text>
+
+      <!-- Power rails BB1 -->
+      <!-- 5V rail (red) -->
+      <rect x="24" y="68" width="560" height="18" rx="4" fill="#200808" />
+      <line x1="30" y1="77" x2="578" y2="77" stroke="#ff2222" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6" />
+      <text x="30" y="73" font-size="9" fill="#ff4444" font-weight="bold" font-family="'Orbitron',monospace">5V</text>
+
+      <!-- GND rail (grey) -->
+      <rect x="24" y="90" width="560" height="18" rx="4" fill="#111111" />
+      <line x1="30" y1="99" x2="578" y2="99" stroke="#666" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6" />
+      <text x="30" y="95" font-size="9" fill="#888" font-weight="bold" font-family="'Orbitron',monospace">GND</text>
+
+      <!-- ── BUCK CONVERTER ── -->
+      <rect x="28" y="118" width="130" height="108" rx="7" fill="#0e1800" stroke="#ff8800" stroke-width="2" />
+      <text x="93" y="137" text-anchor="middle" font-family="'Orbitron',monospace" font-size="10" fill="#ff9900"
+        letter-spacing="1">BUCK</text>
+      <text x="93" y="150" text-anchor="middle" font-family="'Orbitron',monospace" font-size="10" fill="#ff9900"
+        letter-spacing="1">CONV.</text>
+      <text x="93" y="163" text-anchor="middle" font-size="8" fill="#5a3800">7.4V → 5V</text>
+      <!-- Trimmer -->
+      <circle cx="93" cy="182" r="10" fill="#1a2a00" stroke="#ff8800" stroke-width="1.5" />
+      <line x1="93" y1="172" x2="93" y2="179" stroke="#ff8800" stroke-width="1.5" />
+      <text x="93" y="206" text-anchor="middle" font-size="7" fill="#664400">TRIM POT</text>
+      <!-- Buck output pins — labeled OUTSIDE the box, above -->
+      <circle cx="50" cy="226" r="5" fill="#ff2222" />
+      <circle cx="100" cy="226" r="5" fill="#888" />
+      <!-- Pin labels above component, not overlapping wires -->
+      <text x="50" y="216" text-anchor="middle" font-size="8" fill="#ff4444">OUT+</text>
+      <text x="100" y="216" text-anchor="middle" font-size="8" fill="#aaaaaa">OUT−</text>
+      <!-- Buck input pins -->
+      <circle cx="50" cy="236" r="4" fill="#ff6600" />
+      <circle cx="100" cy="236" r="4" fill="#555" />
+      <text x="38" y="248" font-size="7" fill="#ff8800">IN+</text>
+      <text x="88" y="248" font-size="7" fill="#555">IN−</text>
+
+      <!-- ── CAPACITOR 1000μF ── -->
+      <rect x="175" y="118" width="110" height="108" rx="7" fill="#0e1200" stroke="#ffdd00" stroke-width="2" />
+      <text x="230" y="137" text-anchor="middle" font-family="'Orbitron',monospace" font-size="9"
+        fill="#ffdd00">1000μF</text>
+      <text x="230" y="150" text-anchor="middle" font-size="8" fill="#665500">Electrolytic</text>
+      <!-- Cap schematic symbol -->
+      <line x1="205" y1="177" x2="255" y2="177" stroke="#ff4444" stroke-width="3.5" />
+      <line x1="205" y1="188" x2="255" y2="188" stroke="#888" stroke-width="3.5" />
+      <text x="198" y="181" font-size="10" fill="#ff6666" font-weight="bold">+</text>
+      <text x="198" y="194" font-size="10" fill="#888">−</text>
+      <line x1="230" y1="168" x2="230" y2="177" stroke="#ff4444" stroke-width="2" />
+      <line x1="230" y1="188" x2="230" y2="197" stroke="#888" stroke-width="2" />
+      <circle cx="230" cy="168" r="4" fill="#ff2222" />
+      <circle cx="230" cy="197" r="4" fill="#777" />
+      <!-- Labels outside box, above -->
+      <text x="218" y="216" font-size="8" fill="#ff6666">+ (long)</text>
+      <text x="218" y="226" font-size="8" fill="#999">− (short)</text>
+
+      <!-- ── BATTERIES ── -->
+      <rect x="28" y="265" width="130" height="110" rx="7" fill="#001a08" stroke="#22cc55" stroke-width="2" />
+      <text x="93" y="283" text-anchor="middle" font-family="'Orbitron',monospace" font-size="9" fill="#22cc55">2×
+        LiPo</text>
+      <text x="93" y="296" text-anchor="middle" font-size="8" fill="#22cc55">3.7V Series</text>
+      <text x="93" y="309" text-anchor="middle" font-size="8" fill="#116633">= 7.4V Total</text>
+      <!-- battery cells -->
+      <line x1="45" y1="328" x2="55" y2="328" stroke="#22cc55" stroke-width="3" />
+      <line x1="49" y1="322" x2="49" y2="334" stroke="#22cc55" stroke-width="2" />
+      <line x1="55" y1="325" x2="55" y2="331" stroke="#22cc55" stroke-width="2" />
+      <line x1="55" y1="328" x2="65" y2="328" stroke="#22cc55" stroke-width="3" />
+      <line x1="65" y1="322" x2="65" y2="334" stroke="#22cc55" stroke-width="2" />
+      <line x1="71" y1="325" x2="71" y2="331" stroke="#22cc55" stroke-width="2" />
+      <line x1="71" y1="328" x2="100" y2="328" stroke="#22cc55" stroke-width="3" />
+      <text x="42" y="320" font-size="9" fill="#ff4444">+</text>
+      <text x="100" y="320" font-size="9" fill="#888">−</text>
+      <!-- battery labels below -->
+      <text x="93" y="348" text-anchor="middle" font-size="7" fill="#116633">BAT+ → Buck IN+</text>
+      <text x="93" y="360" text-anchor="middle" font-size="7" fill="#116633">BAT− → Buck IN−</text>
+
+      <!-- ── ESP32 ── -->
+      <!-- Chip body -->
+      <rect x="310" y="112" width="200" height="460" rx="8" fill="#0a1218" stroke="#44aacc" stroke-width="2.5"
+        filter="url(#glow-cyan)" />
+      <rect x="310" y="112" width="200" height="28" rx="8" fill="#0d2030" />
+      <text x="410" y="130" text-anchor="middle" font-family="'Orbitron',monospace" font-size="11" fill="#44ccff"
+        letter-spacing="2">ESP32</text>
+
+      <!-- LEFT PINS — each pin gets a colored dot + label to the LEFT, offset so labels don't overlap -->
+      <!-- Layout: label at x=190 (right-aligned), dot at x=310 -->
+      <g font-size="9" font-family="'Share Tech Mono',monospace">
+
+        <!-- 3.3V out -->
+        <circle cx="310" cy="155" r="5.5" fill="#ff6600" stroke="#ff9944" stroke-width="1" />
+        <text x="302" y="148" text-anchor="end" fill="#ff9944">3.3V OUT</text>
+
+        <!-- GND -->
+        <circle cx="310" cy="177" r="5.5" fill="#666" stroke="#999" stroke-width="1" />
+        <text x="302" y="170" text-anchor="end" fill="#aaaaaa">GND</text>
+
+        <!-- D15 -->
+        <circle cx="310" cy="199" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="302" y="192" text-anchor="end" fill="#2a5a6a">D15</text>
+
+        <!-- D2 -->
+        <circle cx="310" cy="221" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="302" y="214" text-anchor="end" fill="#2a5a6a">D2</text>
+
+        <!-- D4 -->
+        <circle cx="310" cy="243" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="302" y="236" text-anchor="end" fill="#2a5a6a">D4</text>
+
+        <!-- GPIO21 SDA -->
+        <circle cx="310" cy="265" r="6" fill="#00ddff" stroke="#00ffff" stroke-width="1.5" />
+        <text x="302" y="258" text-anchor="end" fill="#00ddff" font-weight="bold">G21·SDA</text>
+
+        <!-- GPIO22 SCL -->
+        <circle cx="310" cy="287" r="6" fill="#ffdd00" stroke="#ffff44" stroke-width="1.5" />
+        <text x="302" y="280" text-anchor="end" fill="#ffdd00" font-weight="bold">G22·SCL</text>
+
+        <!-- GPIO34 BTN1 -->
+        <circle cx="310" cy="331" r="6" fill="#ff44cc" stroke="#ff88ee" stroke-width="1.5" />
+        <text x="302" y="324" text-anchor="end" fill="#ff44cc" font-weight="bold">G34·BTN1</text>
+
+        <!-- GPIO35 BTN2 -->
+        <circle cx="310" cy="353" r="6" fill="#aa44ff" stroke="#cc88ff" stroke-width="1.5" />
+        <text x="302" y="346" text-anchor="end" fill="#aa44ff" font-weight="bold">G35·BTN2</text>
+
+        <!-- G32 -->
+        <circle cx="310" cy="375" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="302" y="368" text-anchor="end" fill="#2a5a6a">G32</text>
+
+        <!-- G33 -->
+        <circle cx="310" cy="397" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="302" y="390" text-anchor="end" fill="#2a5a6a">G33</text>
+
+        <!-- G25 -->
+        <circle cx="310" cy="419" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="302" y="412" text-anchor="end" fill="#2a5a6a">G25</text>
+
+        <!-- G26 -->
+        <circle cx="310" cy="441" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="302" y="434" text-anchor="end" fill="#2a5a6a">G26</text>
+
+        <!-- G27 -->
+        <circle cx="310" cy="463" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="302" y="456" text-anchor="end" fill="#2a5a6a">G27</text>
+
+        <!-- G14 -->
+        <circle cx="310" cy="485" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="302" y="478" text-anchor="end" fill="#2a5a6a">G14</text>
+
+        <!-- GND2 -->
+        <circle cx="310" cy="507" r="5.5" fill="#666" stroke="#999" stroke-width="1" />
+        <text x="302" y="500" text-anchor="end" fill="#aaaaaa">GND</text>
+
+        <!-- VIN -->
+        <circle cx="310" cy="529" r="6" fill="#ff2222" stroke="#ff6666" stroke-width="1.5" />
+        <text x="302" y="522" text-anchor="end" fill="#ff4444" font-weight="bold">VIN·5V</text>
+
+        <!-- RIGHT PINS — labels to the RIGHT at x=520+ -->
+
+        <!-- EN -->
+        <circle cx="510" cy="155" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="518" y="159" fill="#2a5a6a">EN</text>
+
+        <!-- VP/36 -->
+        <circle cx="510" cy="177" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="518" y="181" fill="#2a5a6a">VP/36</text>
+
+        <!-- VN/39 -->
+        <circle cx="510" cy="199" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="518" y="203" fill="#2a5a6a">VN/39</text>
+
+        <!-- G34 (right side same number, unused) -->
+        <circle cx="510" cy="221" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="518" y="225" fill="#2a5a6a">G34</text>
+
+        <!-- G35 -->
+        <circle cx="510" cy="243" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="518" y="247" fill="#2a5a6a">G35</text>
+
+        <!-- G32 -->
+        <circle cx="510" cy="265" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="518" y="269" fill="#2a5a6a">G32</text>
+
+        <!-- G33 -->
+        <circle cx="510" cy="287" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="518" y="291" fill="#2a5a6a">G33</text>
+
+        <!-- G25 -->
+        <circle cx="510" cy="309" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="518" y="313" fill="#2a5a6a">G25</text>
+
+        <!-- G26 -->
+        <circle cx="510" cy="331" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="518" y="335" fill="#2a5a6a">G26</text>
+
+        <!-- G27 -->
+        <circle cx="510" cy="353" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="518" y="357" fill="#2a5a6a">G27</text>
+
+        <!-- G14 -->
+        <circle cx="510" cy="375" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="518" y="379" fill="#2a5a6a">G14</text>
+
+        <!-- VIN right -->
+        <circle cx="510" cy="397" r="4" fill="#222" stroke="#2a4a5a" stroke-width="1" />
+        <text x="518" y="401" fill="#2a5a6a">VIN</text>
+
+        <!-- GND right -->
+        <circle cx="510" cy="419" r="5.5" fill="#666" stroke="#999" stroke-width="1" />
+        <text x="518" y="423" fill="#aaaaaa">GND</text>
+
+        <!-- 3.3V right -->
+        <circle cx="510" cy="441" r="6" fill="#ff6600" stroke="#ff9944" stroke-width="1.5" />
+        <text x="518" y="445" fill="#ff9944" font-weight="bold">3.3V</text>
+
+        <!-- GND right 2 -->
+        <circle cx="510" cy="463" r="5.5" fill="#666" stroke="#999" stroke-width="1" />
+        <text x="518" y="467" fill="#aaaaaa">GND</text>
+
+      </g>
+
+      <!-- ESP32 center label lines -->
+      <line x1="380" y1="145" x2="440" y2="145" stroke="#1a3a4a" stroke-width="1" stroke-dasharray="2,4" />
+      <text x="410" y="165" text-anchor="middle" font-size="8" fill="#1a3a4a" letter-spacing="1">WiFi + BT</text>
+      <text x="410" y="178" text-anchor="middle" font-size="8" fill="#1a3a4a">Dual Core</text>
+      <text x="410" y="191" text-anchor="middle" font-size="8" fill="#1a3a4a">3.3V Logic</text>
+
+
+      <!-- ══ BB1 POWER WIRES ══ -->
+
+      <!-- Buck OUT+ → 5V rail (red) -->
+      <path d="M50,221 L50,77" stroke="#ff2222" stroke-width="3" fill="none" stroke-linecap="round" />
+      <circle cx="50" cy="77" r="4" fill="#ff2222" />
+
+      <!-- Buck OUT− → GND rail (grey) -->
+      <path d="M100,221 L100,99" stroke="#888" stroke-width="2.5" fill="none" stroke-linecap="round" />
+      <circle cx="100" cy="99" r="4" fill="#888" />
+
+      <!-- Cap + → 5V rail (red dashed — parallel connection) -->
+      <path d="M230,168 L230,77" stroke="#ff2222" stroke-width="2" fill="none" stroke-dasharray="6,3" />
+      <circle cx="230" cy="77" r="4" fill="#ff2222" />
+
+      <!-- Cap − → GND rail (grey dashed) -->
+      <path d="M230,197 L230,99" stroke="#888" stroke-width="2" fill="none" stroke-dasharray="6,3" />
+      <circle cx="230" cy="99" r="4" fill="#888" />
+
+      <!-- 5V rail → ESP32 VIN: go along the top of BB1 then down -->
+      <path d="M578,77 L580,77 L580,529 L510,529" stroke="#ff2222" stroke-width="3" fill="none" stroke-linecap="round"
+        marker-end="url(#m-red)" />
+
+      <!-- GND → ESP32 GND: route slightly inside -->
+      <path d="M570,99 L572,99 L572,507 L510,507" stroke="#888" stroke-width="2.5" fill="none" stroke-linecap="round"
+        marker-end="url(#m-gnd)" />
+
+      <!-- ESP32 3.3V right pin → 3.3V label (this feeds BB2 via jumper) -->
+      <path d="M510,441 L564,441 L564,77" stroke="#ff6600" stroke-width="2.5" fill="none" stroke-linecap="round" />
+      <circle cx="564" cy="77" r="4" fill="#ff6600" />
+      <text x="568" y="68" font-size="8" fill="#ff9944">3.3V→BB2</text>
+
+
+      <!-- ═══════════════════════════════════════════════════
+     BREADBOARD 2  (RIGHT HALF)
+     OLED, RTC, Buttons
+════════════════════════════════════════════════════ -->
+      <rect x="660" y="38" width="700" height="610" rx="10" fill="#12101a" stroke="#2a1e40" stroke-width="2" />
+      <text x="1010" y="60" text-anchor="middle" font-size="11" fill="#2a1e40" letter-spacing="3"
+        font-family="'Orbitron',monospace">BREADBOARD 2 — PERIPHERALS</text>
+
+      <!-- 3.3V rail BB2 -->
+      <rect x="670" y="68" width="680" height="18" rx="4" fill="#1a0808" />
+      <line x1="676" y1="77" x2="1344" y2="77" stroke="#ff6600" stroke-width="1.5" stroke-dasharray="4,3"
+        opacity="0.7" />
+      <text x="676" y="73" font-size="9" fill="#ff8844" font-weight="bold"
+        font-family="'Orbitron',monospace">3.3V</text>
+
+      <!-- GND rail BB2 -->
+      <rect x="670" y="90" width="680" height="18" rx="4" fill="#0e0e0e" />
+      <line x1="676" y1="99" x2="1344" y2="99" stroke="#666" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.7" />
+      <text x="676" y="95" font-size="9" fill="#888" font-weight="bold" font-family="'Orbitron',monospace">GND</text>
+
+      <!-- ── OLED SSD1306 ── -->
+      <rect x="674" y="115" width="160" height="145" rx="7" fill="#080818" stroke="#6666ff" stroke-width="2" />
+      <text x="754" y="134" text-anchor="middle" font-family="'Orbitron',monospace" font-size="9" fill="#8888ff"
+        letter-spacing="1">SSD1306</text>
+      <text x="754" y="147" text-anchor="middle" font-size="8" fill="#4444aa">0.96" OLED · I²C</text>
+      <!-- Screen mockup -->
+      <rect x="686" y="153" width="136" height="82" rx="3" fill="#00000f" stroke="#3333aa" stroke-width="1.5" />
+      <text x="754" y="175" text-anchor="middle" font-size="13" fill="#00ffcc" font-weight="bold"
+        font-family="'Orbitron',monospace">14:35</text>
+      <text x="754" y="192" text-anchor="middle" font-size="7" fill="#3355aa">Thu, 27 Feb 2026</text>
+      <text x="754" y="206" text-anchor="middle" font-size="7" fill="#aaaa00">⏰ Alarm: 07:00</text>
+      <text x="754" y="220" text-anchor="middle" font-size="7" fill="#226644">28°C Rangpur, BD</text>
+      <!-- OLED Pins — labels ABOVE, dots on connector edge -->
+      <text x="688" y="272" font-size="8" fill="#ff9944" font-weight="bold">VCC</text>
+      <text x="714" y="272" font-size="8" fill="#aaaaaa">GND</text>
+      <text x="736" y="272" font-size="8" fill="#00ddff" font-weight="bold">SDA</text>
+      <text x="760" y="272" font-size="8" fill="#ffdd00" font-weight="bold">SCL</text>
+      <circle cx="692" cy="260" r="5" fill="#ff6600" />
+      <circle cx="718" cy="260" r="5" fill="#777" />
+      <circle cx="744" cy="260" r="5" fill="#00ddff" />
+      <circle cx="768" cy="260" r="5" fill="#ffdd00" />
+
+      <!-- ── DS3231 RTC ── -->
+      <rect x="870" y="115" width="160" height="145" rx="7" fill="#001808" stroke="#22cc55" stroke-width="2" />
+      <text x="950" y="134" text-anchor="middle" font-family="'Orbitron',monospace" font-size="9" fill="#22cc55"
+        letter-spacing="1">DS3231 RTC</text>
+      <text x="950" y="147" text-anchor="middle" font-size="8" fill="#115522">Real Time Clock · I²C</text>
+      <!-- Coin cell graphic -->
+      <circle cx="950" cy="198" r="32" fill="#1a1a1a" stroke="#555" stroke-width="2" />
+      <circle cx="950" cy="198" r="24" fill="#111" stroke="#444" stroke-width="1" />
+      <text x="950" y="195" text-anchor="middle" font-size="8" fill="#777"
+        font-family="'Orbitron',monospace">CR2032</text>
+      <text x="950" y="208" text-anchor="middle" font-size="7" fill="#555">coin cell</text>
+      <!-- RTC Pins — labels ABOVE, dots on edge -->
+      <text x="882" y="272" font-size="8" fill="#ff9944" font-weight="bold">VCC</text>
+      <text x="908" y="272" font-size="8" fill="#aaaaaa">GND</text>
+      <text x="930" y="272" font-size="8" fill="#00ddff" font-weight="bold">SDA</text>
+      <text x="956" y="272" font-size="8" fill="#ffdd00" font-weight="bold">SCL</text>
+      <text x="982" y="272" font-size="8" fill="#aaaaaa">GND</text>
+      <circle cx="886" cy="260" r="5" fill="#ff6600" />
+      <circle cx="912" cy="260" r="5" fill="#777" />
+      <circle cx="938" cy="260" r="5" fill="#00ddff" />
+      <circle cx="964" cy="260" r="5" fill="#ffdd00" />
+      <circle cx="990" cy="260" r="5" fill="#777" />
+
+      <!-- ══ BB2 VCC + GND wires from rails ══ -->
+
+      <!-- OLED VCC → 3.3V rail -->
+      <path d="M692,260 L692,77" stroke="#ff6600" stroke-width="2.5" fill="none" marker-end="url(#m-org)" />
+      <!-- OLED GND → GND rail -->
+      <path d="M718,260 L718,99" stroke="#888" stroke-width="2" fill="none" marker-end="url(#m-gnd)" />
+
+      <!-- RTC VCC → 3.3V rail -->
+      <path d="M886,260 L886,77" stroke="#ff6600" stroke-width="2.5" fill="none" marker-end="url(#m-org)" />
+      <!-- RTC GND → GND rail -->
+      <path d="M912,260 L912,99" stroke="#888" stroke-width="2" fill="none" marker-end="url(#m-gnd)" />
+      <!-- RTC GND2 → GND rail -->
+      <path d="M990,260 L990,99" stroke="#888" stroke-width="2" fill="none" marker-end="url(#m-gnd)" />
+
+      <!-- I2C shared bus lines (SDA+SCL connecting OLED to RTC horizontally) -->
+      <!-- SDA: OLED pin → RTC pin (cyan) -->
+      <path d="M744,260 L744,290 L938,290 L938,260" stroke="#00ddff" stroke-width="2.5" fill="none"
+        stroke-linecap="round" />
+      <text x="841" y="305" text-anchor="middle" font-size="8" fill="#00aabb">─── I²C SDA shared ───</text>
+      <!-- SCL: OLED pin → RTC pin (yellow) -->
+      <path d="M768,260 L768,310 L964,310 L964,260" stroke="#ffdd00" stroke-width="2.5" fill="none"
+        stroke-linecap="round" />
+      <text x="866" y="325" text-anchor="middle" font-size="8" fill="#aaaa00">─── I²C SCL shared ───</text>
+
+      <!-- ── BUTTON 1 ── -->
+      <rect x="674" y="355" width="220" height="165" rx="7" fill="#120c00" stroke="#ff44cc" stroke-width="2" />
+      <text x="784" y="374" text-anchor="middle" font-family="'Orbitron',monospace" font-size="10" fill="#ff44cc">BUTTON
+        1</text>
+      <text x="784" y="387" text-anchor="middle" font-size="8" fill="#771155">MODE / TOGGLE · GPIO 34</text>
+      <!-- Button body -->
+      <rect x="724" y="398" width="120" height="60" rx="5" fill="#1a0a10" stroke="#ff44cc" stroke-width="1.5" />
+      <circle cx="784" cy="428" r="22" fill="#120810" stroke="#ff44cc" stroke-width="2" />
+      <circle cx="784" cy="428" r="12" fill="#1e0c18" />
+      <text x="784" y="432" text-anchor="middle" font-size="7" fill="#771155">PRESS</text>
+      <!-- Leg A → GPIO 34 (pink) -->
+      <circle cx="724" cy="465" r="5" fill="#ff44cc" />
+      <!-- Leg B → GND -->
+      <circle cx="844" cy="465" r="5" fill="#777" />
+      <!-- labels above pins -->
+      <text x="700" y="455" font-size="8" fill="#ff44cc" font-weight="bold">Leg A</text>
+      <text x="836" y="455" font-size="8" fill="#aaaaaa">Leg B</text>
+
+      <!-- 10kΩ Pull-up Resistor for BTN1 -->
+      <rect x="674" y="498" width="220" height="20" rx="0" fill="none" />
+      <text x="784" y="510" text-anchor="middle" font-size="9" fill="#ff44cc">10kΩ Pull-up:</text>
+      <!-- resistor symbol inline -->
+      <line x1="694" y1="532" x2="714" y2="532" stroke="#ff44cc" stroke-width="2" />
+      <rect x="714" y="524" width="56" height="16" rx="4" fill="#1a0a10" stroke="#ff44cc" stroke-width="1.5" />
+      <text x="742" y="536" text-anchor="middle" font-size="9" fill="#ff88ee">10kΩ</text>
+      <line x1="770" y1="532" x2="790" y2="532" stroke="#ff6600" stroke-width="2" />
+      <!-- left of resistor = Leg A / GPIO34 -->
+      <circle cx="694" cy="532" r="3.5" fill="#ff44cc" />
+      <text x="680" y="548" text-anchor="middle" font-size="7" fill="#ff44cc">GPIO34</text>
+      <!-- right of resistor = 3.3V -->
+      <circle cx="790" cy="532" r="3.5" fill="#ff6600" />
+      <text x="800" y="548" text-anchor="middle" font-size="7" fill="#ff9944">3.3V</text>
+
+      <!-- Leg A wire → GPIO34 (routed, from button pin up through resistor junction) -->
+      <path d="M724,465 L724,532 L714,532" stroke="#ff44cc" stroke-width="2" fill="none" stroke-linecap="round" />
+      <!-- 3.3V side of resistor → 3.3V rail -->
+      <path d="M790,532 L790,77" stroke="#ff6600" stroke-width="2" fill="none" stroke-linecap="round" />
+      <circle cx="790" cy="77" r="3.5" fill="#ff6600" />
+      <!-- Leg B → GND rail -->
+      <path d="M844,465 L844,99" stroke="#888" stroke-width="2" fill="none" marker-end="url(#m-gnd)" />
+
+      <!-- ── BUTTON 2 ── -->
+      <rect x="926" y="355" width="220" height="165" rx="7" fill="#0e0818" stroke="#aa44ff" stroke-width="2" />
+      <text x="1036" y="374" text-anchor="middle" font-family="'Orbitron',monospace" font-size="10"
+        fill="#aa44ff">BUTTON 2</text>
+      <text x="1036" y="387" text-anchor="middle" font-size="8" fill="#551188">SET / ALARM · GPIO 35</text>
+      <!-- Button body -->
+      <rect x="976" y="398" width="120" height="60" rx="5" fill="#0e0818" stroke="#aa44ff" stroke-width="1.5" />
+      <circle cx="1036" cy="428" r="22" fill="#0a0615" stroke="#aa44ff" stroke-width="2" />
+      <circle cx="1036" cy="428" r="12" fill="#120820" />
+      <text x="1036" y="432" text-anchor="middle" font-size="7" fill="#551188">PRESS</text>
+      <!-- Leg A -->
+      <circle cx="976" cy="465" r="5" fill="#aa44ff" />
+      <!-- Leg B -->
+      <circle cx="1096" cy="465" r="5" fill="#777" />
+      <text x="952" y="455" font-size="8" fill="#aa44ff" font-weight="bold">Leg A</text>
+      <text x="1086" y="455" font-size="8" fill="#aaaaaa">Leg B</text>
+
+      <!-- 10kΩ Pull-up Resistor for BTN2 -->
+      <text x="1036" y="510" text-anchor="middle" font-size="9" fill="#aa44ff">10kΩ Pull-up:</text>
+      <line x1="946" y1="532" x2="966" y2="532" stroke="#aa44ff" stroke-width="2" />
+      <rect x="966" y="524" width="56" height="16" rx="4" fill="#0e0818" stroke="#aa44ff" stroke-width="1.5" />
+      <text x="994" y="536" text-anchor="middle" font-size="9" fill="#cc88ff">10kΩ</text>
+      <line x1="1022" y1="532" x2="1042" y2="532" stroke="#ff6600" stroke-width="2" />
+      <circle cx="946" cy="532" r="3.5" fill="#aa44ff" />
+      <text x="930" y="548" text-anchor="middle" font-size="7" fill="#aa44ff">GPIO35</text>
+      <circle cx="1042" cy="532" r="3.5" fill="#ff6600" />
+      <text x="1056" y="548" text-anchor="middle" font-size="7" fill="#ff9944">3.3V</text>
+
+      <!-- BTN2 Leg A → resistor junction -->
+      <path d="M976,465 L976,532 L966,532" stroke="#aa44ff" stroke-width="2" fill="none" stroke-linecap="round" />
+      <!-- 3.3V side → 3.3V rail -->
+      <path d="M1042,532 L1042,77" stroke="#ff6600" stroke-width="2" fill="none" stroke-linecap="round" />
+      <circle cx="1042" cy="77" r="3.5" fill="#ff6600" />
+      <!-- Leg B → GND -->
+      <path d="M1096,465 L1096,99" stroke="#888" stroke-width="2" fill="none" marker-end="url(#m-gnd)" />
+
+
+      <!-- ═══════════════════════════════════════════════════
+     CROSS-BOARD JUMPER WIRES
+     Routed BELOW both breadboards to avoid overlap
+════════════════════════════════════════════════════ -->
+
+      <!-- Background lane for jumper wires -->
+      <rect x="14" y="665" width="1346" height="200" rx="8" fill="#090c10" stroke="#151f2e" stroke-width="1" />
+      <text x="690" y="685" text-anchor="middle" font-size="10" fill="#1e2a3a" letter-spacing="3"
+        font-family="'Orbitron',monospace">CROSS-BOARD JUMPER WIRES (BB1 ESP32 → BB2 Rails)</text>
+
+      <!-- 3.3V jumper: ESP32 3.3V out → BB2 3.3V rail -->
+      <path d="M564,441 L564,670 L660,670 L660,77" stroke="#ff6600" stroke-width="3" fill="none" stroke-dasharray="10,5"
+        marker-end="url(#m-org)" stroke-linecap="round" />
+      <text x="612" y="700" text-anchor="middle" font-size="9" fill="#ff9944">3.3V</text>
+      <text x="612" y="713" text-anchor="middle" font-size="8" fill="#885522">ESP32 3.3V pin → BB2 + rail</text>
+
+      <!-- GND jumper: ESP32 GND → BB2 GND rail -->
+      <path d="M572,507 L572,690 L654,690 L654,99" stroke="#888" stroke-width="3" fill="none" stroke-dasharray="10,5"
+        marker-end="url(#m-gnd)" stroke-linecap="round" />
+      <text x="612" y="730" text-anchor="middle" font-size="9" fill="#aaaaaa">GND</text>
+      <text x="612" y="743" text-anchor="middle" font-size="8" fill="#555">ESP32 GND → BB2 − rail</text>
+
+      <!-- SDA jumper: ESP32 GPIO21 → BB2 OLED SDA + RTC SDA (cyan) -->
+      <path d="M310,265 L280,265 L280,710 L744,710 L744,260" stroke="#00ddff" stroke-width="3" fill="none"
+        stroke-dasharray="10,5" marker-end="url(#m-sda)" stroke-linecap="round" />
+      <text x="512" y="750" text-anchor="middle" font-size="9" fill="#00ddff">SDA · GPIO 21</text>
+      <text x="512" y="763" text-anchor="middle" font-size="8" fill="#006677">ESP32 G21 → OLED SDA → RTC SDA</text>
+
+      <!-- SCL jumper: ESP32 GPIO22 → BB2 OLED SCL + RTC SCL (yellow) -->
+      <path d="M310,287 L270,287 L270,730 L768,730 L768,260" stroke="#ffdd00" stroke-width="3" fill="none"
+        stroke-dasharray="10,5" marker-end="url(#m-scl)" stroke-linecap="round" />
+      <text x="519" y="775" text-anchor="middle" font-size="9" fill="#ffdd00">SCL · GPIO 22</text>
+      <text x="519" y="788" text-anchor="middle" font-size="8" fill="#776600">ESP32 G22 → OLED SCL → RTC SCL</text>
+
+      <!-- GPIO34 Button1 jumper (pink) -->
+      <path d="M310,331 L250,331 L250,768 L724,768 L724,532" stroke="#ff44cc" stroke-width="3" fill="none"
+        stroke-dasharray="10,5" marker-end="url(#m-btn1)" stroke-linecap="round" />
+      <text x="487" y="830" text-anchor="middle" font-size="9" fill="#ff44cc">GPIO 34 · Button 1</text>
+      <text x="487" y="843" text-anchor="middle" font-size="8" fill="#882266">ESP32 G34 → BTN1 Leg A (via 10kΩ to
+        3.3V)</text>
+
+      <!-- GPIO35 Button2 jumper (purple) -->
+      <path d="M310,353 L240,353 L240,786 L976,786 L976,532" stroke="#aa44ff" stroke-width="3" fill="none"
+        stroke-dasharray="10,5" marker-end="url(#m-btn2)" stroke-linecap="round" />
+      <text x="608" y="856" text-anchor="middle" font-size="9" fill="#aa44ff">GPIO 35 · Button 2</text>
+      <text x="608" y="869" text-anchor="middle" font-size="8" fill="#552288">ESP32 G35 → BTN2 Leg A (via 10kΩ to
+        3.3V)</text>
+
+      <!-- ═══════════════════════════════════════════════════
+     PULL-UP EXPLANATION INSET
+════════════════════════════════════════════════════ -->
+      <rect x="1160" y="355" width="185" height="250" rx="7" fill="#0c0a18" stroke="#333355" stroke-width="1.5" />
+      <text x="1252" y="374" text-anchor="middle" font-family="'Orbitron',monospace" font-size="8" fill="#4a4a8a"
+        letter-spacing="1">PULL-UP LOGIC</text>
+      <!-- schematic -->
+      <text x="1252" y="396" text-anchor="middle" font-size="8" fill="#ff9944">3.3V</text>
+      <line x1="1252" y1="400" x2="1252" y2="415" stroke="#ff6600" stroke-width="2" />
+      <rect x="1236" y="415" width="32" height="50" rx="4" fill="#1a1030" stroke="#aa44ff" stroke-width="1.5" />
+      <text x="1252" y="435" text-anchor="middle" font-size="7" fill="#cc88ff">10k</text>
+      <text x="1252" y="448" text-anchor="middle" font-size="7" fill="#cc88ff">Ω</text>
+      <line x1="1252" y1="465" x2="1252" y2="480" stroke="#aa44ff" stroke-width="2" />
+      <!-- junction -->
+      <circle cx="1252" cy="480" r="4" fill="#aa44ff" />
+      <!-- left branch: GPIO -->
+      <line x1="1185" y1="480" x2="1252" y2="480" stroke="#aa44ff" stroke-width="2" marker-end="url(#m-btn2)" />
+      <text x="1170" y="476" text-anchor="end" font-size="8" fill="#aa44ff">GPIO</text>
+      <text x="1170" y="488" text-anchor="end" font-size="7" fill="#552288">34 or 35</text>
+      <!-- right branch: to button -->
+      <line x1="1252" y1="480" x2="1290" y2="480" stroke="#aa44ff" stroke-width="2" />
+      <!-- button box -->
+      <rect x="1290" y="468" width="44" height="24" rx="3" fill="#1a1030" stroke="#aa44ff" stroke-width="1.5" />
+      <text x="1312" y="484" text-anchor="middle" font-size="7" fill="#cc88ff">BTN</text>
+      <!-- button → GND -->
+      <line x1="1334" y1="480" x2="1334" y2="508" stroke="#888" stroke-width="2" />
+      <line x1="1320" y1="508" x2="1348" y2="508" stroke="#888" stroke-width="2.5" />
+      <line x1="1325" y1="514" x2="1343" y2="514" stroke="#888" stroke-width="1.5" />
+      <line x1="1330" y1="519" x2="1338" y2="519" stroke="#888" stroke-width="1" />
+      <text x="1334" y="530" text-anchor="middle" font-size="8" fill="#888">GND</text>
+
+      <text x="1200" y="550" font-size="8" fill="#2a4a6a">NOT pressed → HIGH</text>
+      <text x="1200" y="563" font-size="8" fill="#2a4a6a">(3.3V via 10kΩ)</text>
+      <text x="1200" y="578" font-size="8" fill="#2a4a6a">Pressed → LOW</text>
+      <text x="1200" y="591" font-size="8" fill="#2a4a6a">(pulled to GND)</text>
+
+      <!-- ═══════════════════════════════════════════════════
+     I2C BUS BADGE
+════════════════════════════════════════════════════ -->
+      <rect x="674" y="600" width="230" height="44" rx="6" fill="#000c18" stroke="#00ddff33" stroke-width="1.5" />
+      <text x="789" y="617" text-anchor="middle" font-size="9" fill="#00ddff" font-family="'Orbitron',monospace">I²C
+        SHARED BUS</text>
+      <text x="789" y="631" text-anchor="middle" font-size="8" fill="#005566">OLED 0x3C · RTC 0x68 · No conflict</text>
+
+    </svg>
+  </div>
+
+  <!-- NOTES -->
+  <div class="notes">
+    <div class="note warn">
+      <b>⚠ SET BUCK TO 5V FIRST</b>
+      <p>Before connecting ESP32, power buck from batteries. Use a multimeter on OUT+ / OUT−. Turn the trimmer pot until
+        you read exactly <strong>5.0V</strong>. Then connect everything else.</p>
+    </div>
+    <div class="note warn">
+      <b>⚠ CAP POLARITY</b>
+      <p><strong>Long leg (+)</strong> → 5V rail. <strong>Short leg / stripe (−)</strong> → GND. Reversed polarity will
+        burst the capacitor. The white stripe on the body marks the negative side.</p>
+    </div>
+    <div class="note info">
+      <b>📡 I²C SHARED WIRES</b>
+      <p>OLED and RTC share the same <strong>SDA (GPIO 21)</strong> and <strong>SCL (GPIO 22)</strong> wires. One pair
+        of wires branches to both. Different addresses (0x3C / 0x68) — no conflict.</p>
+    </div>
+    <div class="note info">
+      <b>🔌 3.3V DISTRIBUTION</b>
+      <p>ESP32's <strong>3.3V output pin</strong> powers BB2's + rail via a jumper wire. OLED and RTC must use 3.3V —
+        <strong>never connect them to 5V directly</strong> or they will be damaged.</p>
+    </div>
+    <div class="note tip">
+      <b>✅ 10kΩ PULL-UP WIRING</b>
+      <p>GPIO 34 &amp; 35 have no internal pull-up. Each needs a <strong>10kΩ resistor between its GPIO pin and
+          3.3V</strong>. Button Leg A → GPIO. Button Leg B → GND.</p>
+    </div>
+
+</body>
+
+</html>

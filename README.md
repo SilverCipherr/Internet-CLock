@@ -59,6 +59,7 @@ ESP32 GND            ──── OLED GND  ──── DS3231 GND
 ESP32 GPIO 35  ──[ Button 1 ]── GND   (10kΩ pull-up to 3.3V)
 ESP32 GPIO 34  ──[ Button 2 ]── GND   (10kΩ pull-up to 3.3V)
 ```
+For **Graphical** diagram: [1. Wired diagram](Full_Wiring.html) and [2. Overview diagram](Diagram.html) is provided.
 
 > ⚠️ GPIO 34 and 35 are **input-only** on ESP32 — they have no internal pull-up. External 10kΩ resistors to 3.3V are **required**.
 

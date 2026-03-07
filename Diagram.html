@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internet Clock — Circuit Diagram</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+    :root {
+      --bg: #070d14;
+      --grid: #0e1d2a;
+      --cyan: #00e5ff;
+      --green: #39ff14;
+      --yellow: #ffe600;
+      --red: #ff3c3c;
+      --orange: #ff8c00;
+      --purple: #b96aff;
+      --white: #e8f4ff;
+      --dim: #3a5a70;
+      --wire-sda: #00cfff;
+      --wire-scl: #ff6b00;
+      --wire-vcc: #ff3c3c;
+      --wire-gnd: #888;
+      --wire-gpio: #39ff14;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Dot-grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, #1a3a50 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    header {
+      text-align: center;
+      padding: 32px 20px 20px;
+      position: relative;
+    }
+
+    header h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(18px, 4vw, 34px);
+      font-weight: 900;
+      color: var(--cyan);
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      text-shadow: 0 0 20px #00e5ff88, 0 0 60px #00e5ff33;
+    }
+
+    header p {
+      color: var(--dim);
+      font-size: 12px;
+      letter-spacing: 3px;
+      margin-top: 6px;
+    }
+
+    .legend-bar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      padding: 14px 20px;
+      border-top: 1px solid #0e2230;
+      border-bottom: 1px solid #0e2230;
+      margin: 0 20px 30px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      color: var(--dim);
+      letter-spacing: 1px;
+    }
+
+    .legend-line {
+      width: 30px;
+      height: 3px;
+      border-radius: 2px;
+    }
+
+    /* Main diagram canvas */
+    .diagram {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    /* SVG wires layer */
+    .wires-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .components-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto auto auto;
+      gap: 20px;
+      position: relative;
+    }
+
+    /* Component card */
+    .component {
+      background: linear-gradient(145deg, #0c1e2e, #091520);
+      border: 1px solid #1a3a50;
+      border-radius: 12px;
+      padding: 18px 14px;
+      position: relative;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      overflow: hidden;
+    }
+
+    .component::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .component:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 25px #00e5ff22;
+    }
+
+    .component.esp32 {
+      grid-column: 2 / 4;
+      grid-row: 1 / 3;
+    }
+
+    .component.esp32::before {
+      background: var(--cyan);
+    }
+
+    .component.oled {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .component.oled::before {
+      background: var(--purple);
+    }
+
+    .component.rtc {
+      grid-column: 4;
+      grid-row: 1;
+    }
+
+    .component.rtc::before {
+      background: var(--green);
+    }
+
+    .component.power {
+      grid-column: 4;
+      grid-row: 2;
+    }
+
+    .component.power::before {
+      background: var(--orange);
+    }
+
+    .component.btn1 {
+      grid-column: 1;
+      grid-row: 3;
+    }
+
+    .component.btn1::before {
+      background: var(--yellow);
+    }
+
+    .component.btn2 {
+      grid-column: 2;
+      grid-row: 3;
+    }
+
+    .component.btn2::before {
+      background: var(--yellow);
+    }
+
+    .component.cap {
+      grid-column: 3;
+      grid-row: 3;
+    }
+
+    .component.cap::before {
+      background: var(--orange);
+    }
+
+    .component.batt {
+      grid-column: 4;
+      grid-row: 3;
+    }
+
+    .component.batt {}
+
+    .component.batt::before {
+      background: var(--green);
+    }
+
+    .comp-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .comp-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .comp-sub {
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    /* Pin table */
+    .pin-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .pin-table tr {
+      border-bottom: 1px solid #0e2230;
+    }
+
+    .pin-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .pin-table td {
+      font-size: 10px;
+      padding: 4px 2px;
+      line-height: 1.4;
+      vertical-align: top;
+    }
+
+    .pin-table .pin-name {
+      color: var(--dim);
+      width: 40%;
+    }
+
+    .pin-table .pin-arrow {
+      color: #1a4a6a;
+      width: 10%;
+      text-align: center;
+    }
+
+    .pin-table .pin-dest {
+      width: 50%;
+    }
+
+    .pin-table .pin-dest.sda {
+      color: var(--wire-sda);
+    }
+
+    .pin-table .pin-dest.scl {
+      color: var(--wire-scl);
+    }
+
+    .pin-table .pin-dest.vcc {
+      color: var(--wire-vcc);
+    }
+
+    .pin-table .pin-dest.gnd {
+      color: var(--wire-gnd);
+    }
+
+    .pin-table .pin-dest.gpio {
+      color: var(--wire-gpio);
+    }
+
+    .pin-table .pin-dest.info {
+      color: var(--yellow);
+    }
+
+    /* ESP32 special styling */
+    .esp32 .comp-name {
+      color: var(--cyan);
+      font-size: 14px;
+    }
+
+    .esp32 .comp-icon {
+      font-size: 40px;
+    }
+
+    .esp32-pins {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 24px;
+      margin-top: 10px;
+    }
+
+    .esp32-col-title {
+      font-size: 9px;
+      color: var(--dim);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #0e2230;
+      padding-bottom: 4px;
+    }
+
+    .pin-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 0;
+      font-size: 10px;
+      border-bottom: 1px solid #0a1a26;
+    }
+
+    .pin-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .pin-gpio {
+      color: var(--dim);
+      min-width: 60px;
+    }
+
+    .pin-function {
+      flex: 1;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 8px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      letter-spacing: 1px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .badge.i2c {
+      background: #00e5ff22;
+      color: var(--cyan);
+      border: 1px solid #00e5ff44;
+    }
+
+    .badge.pwr {
+      background: #ff3c3c22;
+      color: var(--red);
+      border: 1px solid #ff3c3c44;
+    }
+
+    .badge.in {
+      background: #39ff1422;
+      color: var(--green);
+      border: 1px solid #39ff1444;
+    }
+
+    .badge.out {
+      background: #ff8c0022;
+      color: var(--orange);
+      border: 1px solid #ff8c0044;
+    }
+
+    /* OLED screen mockup */
+    .oled-screen {
+      background: #000;
+      border: 2px solid #4040a0;
+      border-radius: 4px;
+      padding: 8px;
+      margin: 10px 0;
+      font-size: 9px;
+      line-height: 1.6;
+      box-shadow: 0 0 12px #8888ff44 inset;
+    }
+
+    .oled-time {
+      color: var(--cyan);
+      font-size: 14px;
+      letter-spacing: 2px;
+      font-weight: bold;
+    }
+
+    .oled-date {
+      color: #6060a0;
+      font-size: 9px;
+    }
+
+    .oled-alarm {
+      color: var(--yellow);
+      font-size: 8px;
+    }
+
+    /* Note boxes */
+    .notes-section {
+      max-width: 1100px;
+      margin: 0 auto 40px;
+      padding: 0 20px;
+    }
+
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .note-card {
+      background: #091520;
+      border: 1px solid #1a3a50;
+      border-left: 3px solid var(--yellow);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .note-card.danger {
+      border-left-color: var(--red);
+    }
+
+    .note-card.tip {
+      border-left-color: var(--green);
+    }
+
+    .note-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .note-card .note-title {
+      color: var(--yellow);
+    }
+
+    .note-card.danger .note-title {
+      color: var(--red);
+    }
+
+    .note-card.tip .note-title {
+      color: var(--green);
+    }
+
+    .note-card p,
+    .note-card li {
+      font-size: 11px;
+      color: #5a8aaa;
+      line-height: 1.7;
+      letter-spacing: 0.3px;
+    }
+
+    .note-card ul {
+      padding-left: 14px;
+    }
+
+    /* I2C bus visual */
+    .i2c-bus {
+      background: #091520;
+      border: 1px solid #00e5ff33;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 20px 0 0;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .i2c-bus-label {
+      color: var(--cyan);
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+    }
+
+    .i2c-node {
+      background: #00e5ff15;
+      border: 1px solid #00e5ff44;
+      border-radius: 4px;
+      padding: 3px 8px;
+      color: var(--cyan);
+      font-size: 10px;
+    }
+
+    .i2c-sep {
+      color: var(--dim);
+    }
+
+    /* Glowing pulse animation */
+    @keyframes pulse-glow {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .glow-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse-glow 2s ease-in-out infinite;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+
+    /* Section title */
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--dim);
+      text-transform: uppercase;
+      max-width: 1100px;
+      margin: 0 auto 14px;
+      padding: 0 20px;
+      border-left: 3px solid var(--cyan);
+      padding-left: 12px;
+    }
+
+    /* Power path visual */
+    .power-path {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      margin: 10px 0;
+      font-size: 10px;
+    }
+
+    .pp-node {
+      background: #0c1e2e;
+      border: 1px solid #1a3a50;
+      border-radius: 6px;
+      padding: 5px 10px;
+      color: var(--white);
+      white-space: nowrap;
+    }
+
+    .pp-arrow {
+      color: var(--orange);
+      padding: 0 6px;
+      font-size: 14px;
+    }
+
+    .pp-label {
+      font-size: 9px;
+      color: var(--dim);
+      display: block;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: 2px;
+      border-top: 1px solid #0e2230;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .components-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .component.esp32 {
+        grid-column: 1 / 3;
+      }
+
+      .component.rtc {
+        grid-column: 2;
+      }
+
+      .component.power {
+        grid-column: 2;
+      }
+
+      .component.batt {
+        grid-column: 2;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Internet Clock</h1>
+    <p><span class="glow-dot"></span> ESP32 · DS3231 · SSD1306 · OpenWeatherMap · Circuit Diagram</p>
+  </header>
+
+  <!-- Legend -->
+  <div class="legend-bar">
+    <div class="legend-item">
+      <div class="legend-line" style="background:var(--wire-sda)"></div> SDA (GPIO 21)
+    </div>
+    <div class="legend-item">
+      <div class="legend-line" style="background:var(--wire-scl)"></div> SCL (GPIO 22)
+    </div>
+    <div class="legend-item">
+      <div class="legend-line" style="background:var(--wire-vcc)"></div> 3.3V / VCC
+    </div>
+    <div class="legend-item">
+      <div class="legend-line" style="background:var(--wire-gnd)"></div> GND
+    </div>
+    <div class="legend-item">
+      <div class="legend-line" style="background:var(--wire-gpio)"></div> GPIO Signal
+    </div>
+    <div class="legend-item">
+      <div class="legend-line" style="background:var(--orange)"></div> Power Path
+    </div>
+  </div>
+
+  <!-- POWER PATH -->
+  <p class="section-title">Power Path</p>
+  <div style="max-width:1100px;margin:0 auto 28px;padding:0 20px;">
+    <div class="power-path">
+      <div class="pp-node">
+        🔋 2× 3.7V LiPo<br><span class="pp-label">Series = 7.4V</span>
+      </div>
+      <div class="pp-arrow">→</div>
+      <div class="pp-node">
+        ⚡ Buck Converter<br><span class="pp-label">Set to 5V out</span>
+      </div>
+      <div class="pp-arrow">→</div>
+      <div class="pp-node">
+        🔌 1000μF Cap<br><span class="pp-label">Smoothing</span>
+      </div>
+      <div class="pp-arrow">→</div>
+      <div class="pp-node">
+        ESP32 VIN (5V)<br><span class="pp-label">→ 3.3V internal reg</span>
+      </div>
+      <div class="pp-arrow">→</div>
+      <div class="pp-node">
+        ESP32 3.3V pin<br><span class="pp-label">→ OLED, RTC, Buttons</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPONENTS -->
+  <p class="section-title">Components & Wiring</p>
+  <div class="diagram">
+    <div class="components-grid">
+
+      <!-- OLED -->
+      <div class="component oled">
+        <span class="comp-icon">🖥️</span>
+        <div class="comp-name">SSD1306 OLED</div>
+        <div class="comp-sub">0.96" · 128×64 · I²C · 0x3C</div>
+        <div class="oled-screen">
+          <div class="oled-time">14:35</div>
+          <div class="oled-date">Thu, 26 Feb 2026</div>
+          <div class="oled-alarm">⏰ 07:00</div>
+        </div>
+        <table class="pin-table">
+          <tr>
+            <td class="pin-name">VCC</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest vcc">3.3V</td>
+          </tr>
+          <tr>
+            <td class="pin-name">GND</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest gnd">GND</td>
+          </tr>
+          <tr>
+            <td class="pin-name">SDA</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest sda">GPIO 21</td>
+          </tr>
+          <tr>
+            <td class="pin-name">SCL</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest scl">GPIO 22</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ESP32 CENTER -->
+      <div class="component esp32">
+        <span class="comp-icon">⚡</span>
+        <div class="comp-name">ESP32 DevKit</div>
+        <div class="comp-sub">Dual-core · WiFi · Bluetooth · 3.3V logic</div>
+        <div class="esp32-pins">
+          <div>
+            <div class="esp32-col-title">Left Pins</div>
+            <div class="pin-row">
+              <div class="pin-dot" style="background:var(--red)"></div><span class="pin-gpio">3.3V</span><span
+                class="pin-function"><span class="badge pwr">PWR</span> → OLED, RTC</span>
+            </div>
+            <div class="pin-row">
+              <div class="pin-dot" style="background:#555"></div><span class="pin-gpio">GND</span><span
+                class="pin-function"><span class="badge"
+                  style="background:#33333322;color:#888;border-color:#44444444">GND</span> Common ground</span>
+            </div>
+            <div class="pin-row">
+              <div class="pin-dot" style="background:var(--wire-sda)"></div><span class="pin-gpio">GPIO 21</span><span
+                class="pin-function"><span class="badge i2c">I²C SDA</span></span>
+            </div>
+            <div class="pin-row">
+              <div class="pin-dot" style="background:var(--wire-scl)"></div><span class="pin-gpio">GPIO 22</span><span
+                class="pin-function"><span class="badge i2c">I²C SCL</span></span>
+            </div>
+            <div class="pin-row">
+              <div class="pin-dot" style="background:var(--yellow)"></div><span class="pin-gpio">GPIO 34</span><span
+                class="pin-function"><span class="badge in">IN</span> Button 1</span>
+            </div>
+            <div class="pin-row">
+              <div class="pin-dot" style="background:var(--yellow)"></div><span class="pin-gpio">GPIO 35</span><span
+                class="pin-function"><span class="badge in">IN</span> Button 2</span>
+            </div>
+          </div>
+          <div>
+            <div class="esp32-col-title">Power Pins</div>
+            <div class="pin-row">
+              <div class="pin-dot" style="background:var(--orange)"></div><span class="pin-gpio">VIN</span><span
+                class="pin-function">← Buck 5V out</span>
+            </div>
+            <div class="pin-row">
+              <div class="pin-dot" style="background:#555"></div><span class="pin-gpio">GND</span><span
+                class="pin-function">← Buck GND</span>
+            </div>
+            <br>
+            <div class="esp32-col-title" style="margin-top:10px">I²C Bus</div>
+            <div class="i2c-bus" style="margin:6px 0 0; padding:8px; gap:8px;">
+              <span class="i2c-bus-label">BUS</span>
+              <span class="i2c-node">ESP32</span>
+              <span class="i2c-sep">──</span>
+              <span class="i2c-node">OLED 0x3C</span>
+              <span class="i2c-sep">──</span>
+              <span class="i2c-node">RTC 0x68</span>
+            </div>
+            <p style="font-size:9px;color:var(--dim);margin-top:6px;">SDA & SCL shared between<br>OLED and RTC — no
+              conflict.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RTC -->
+      <div class="component rtc">
+        <span class="comp-icon">🕐</span>
+        <div class="comp-name">DS3231 RTC</div>
+        <div class="comp-sub">I²C · 0x68 · CR2032 backup</div>
+        <table class="pin-table">
+          <tr>
+            <td class="pin-name">VCC</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest vcc">3.3V</td>
+          </tr>
+          <tr>
+            <td class="pin-name">GND</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest gnd">GND</td>
+          </tr>
+          <tr>
+            <td class="pin-name">SDA</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest sda">GPIO 21</td>
+          </tr>
+          <tr>
+            <td class="pin-name">SCL</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest scl">GPIO 22</td>
+          </tr>
+          <tr>
+            <td class="pin-name">BAT slot</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest info">CR2032 coin cell</td>
+          </tr>
+        </table>
+        <p style="font-size:9px;color:var(--dim);margin-top:8px;">Keeps time when power off.<br>NTP syncs to RTC on
+          boot.</p>
+      </div>
+
+      <!-- POWER MODULE -->
+      <div class="component power">
+        <span class="comp-icon">⚡</span>
+        <div class="comp-name">Buck Converter</div>
+        <div class="comp-sub">7.4V → 5V · Adjust pot before use!</div>
+        <table class="pin-table">
+          <tr>
+            <td class="pin-name">IN +</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest vcc">Battery +</td>
+          </tr>
+          <tr>
+            <td class="pin-name">IN −</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest gnd">Battery −</td>
+          </tr>
+          <tr>
+            <td class="pin-name">OUT +</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest gpio">ESP32 VIN</td>
+          </tr>
+          <tr>
+            <td class="pin-name">OUT −</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest gnd">GND rail</td>
+          </tr>
+          <tr>
+            <td class="pin-name">CAP 1000μF</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest info">Across OUT+/OUT−</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- BUTTON 1 -->
+      <div class="component btn1">
+        <span class="comp-icon">🔘</span>
+        <div class="comp-name">Button 1</div>
+        <div class="comp-sub">MODE / TOGGLE display</div>
+        <table class="pin-table">
+          <tr>
+            <td class="pin-name">Leg A</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest gpio">GPIO 34</td>
+          </tr>
+          <tr>
+            <td class="pin-name">Leg B</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest gnd">GND</td>
+          </tr>
+          <tr>
+            <td class="pin-name">10kΩ R</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest vcc">GPIO34 to 3.3V</td>
+          </tr>
+        </table>
+        <p style="font-size:9px;color:var(--dim);margin-top:8px;">Press: toggle Clock↔Weather<br>Hold in alarm mode:
+          next field</p>
+      </div>
+
+      <!-- BUTTON 2 -->
+      <div class="component btn2">
+        <span class="comp-icon">🔘</span>
+        <div class="comp-name">Button 2</div>
+        <div class="comp-sub">SET / ALARM entry</div>
+        <table class="pin-table">
+          <tr>
+            <td class="pin-name">Leg A</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest gpio">GPIO 35</td>
+          </tr>
+          <tr>
+            <td class="pin-name">Leg B</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest gnd">GND</td>
+          </tr>
+          <tr>
+            <td class="pin-name">10kΩ R</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest vcc">GPIO35 to 3.3V</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- CAPACITOR -->
+      <div class="component cap">
+        <span class="comp-icon">🔋</span>
+        <div class="comp-name">1000μF Cap</div>
+        <div class="comp-sub">10V rating · Electrolytic</div>
+        <table class="pin-table">
+          <tr>
+            <td class="pin-name">+ leg (long)</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest vcc">5V rail (Buck OUT+)</td>
+          </tr>
+          <tr>
+            <td class="pin-name">− leg (short)</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest gnd">GND rail</td>
+          </tr>
+        </table>
+        <p style="font-size:9px;color:var(--dim);margin-top:8px;">Filters voltage spikes from<br>WiFi radio current
+          bursts.</p>
+      </div>
+
+      <!-- BATTERY -->
+      <div class="component batt">
+        <span class="comp-icon">🔋</span>
+        <div class="comp-name">2× LiPo 3.7V</div>
+        <div class="comp-sub">Series connection = 7.4V total</div>
+        <table class="pin-table">
+          <tr>
+            <td class="pin-name">Cell1 −</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest gnd">Buck IN −</td>
+          </tr>
+          <tr>
+            <td class="pin-name">Cell1 +</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest info">Cell2 −</td>
+          </tr>
+          <tr>
+            <td class="pin-name">Cell2 +</td>
+            <td class="pin-arrow">→</td>
+            <td class="pin-dest vcc">Buck IN +</td>
+          </tr>
+        </table>
+        <p style="font-size:9px;color:var(--dim);margin-top:8px;">Use battery casing with<br>series connector installed.
+        </p>
+      </div>
+
+    </div><!-- end grid -->
+  </div><!-- end diagram -->
+
+  <!-- NOTES -->
+  <p class="section-title">Important Notes</p>
+  <div class="notes-section">
+    <div class="notes-grid">
+
+      <div class="note-card danger">
+        <div class="note-title">⚠ Critical: Set Buck Voltage First</div>
+        <p>Before connecting the ESP32, power the buck converter with batteries and use a multimeter to adjust the
+          trimmer potentiometer until output reads exactly <strong style="color:var(--orange)">5.0V</strong>. Too high
+          will fry the ESP32.</p>
+      </div>
+
+      <div class="note-card danger">
+        <div class="note-title">⚠ GPIO 34 & 35 — Input Only</div>
+        <p>These pins have NO internal pull-up resistors. You MUST add a <strong style="color:var(--orange)">10kΩ
+            external resistor</strong> from each pin to 3.3V. Without this, button readings will be random noise.</p>
+      </div>
+
+      <div class="note-card">
+        <div class="note-title">📡 I²C Shared Bus</div>
+        <ul>
+          <li>OLED uses address <strong style="color:var(--cyan)">0x3C</strong></li>
+          <li>DS3231 uses address <strong style="color:var(--cyan)">0x68</strong></li>
+          <li>Both share GPIO 21 (SDA) and GPIO 22 (SCL)</li>
+          <li>No conflict — different addresses</li>
+        </ul>
+      </div>
+
+      <div class="note-card tip">
+        <div class="note-title">✅ Button Wiring Pattern</div>
+        <p>Wire each button: one leg to GPIO pin, other leg to GND. Then a 10kΩ resistor from that same GPIO to 3.3V.
+          Button press pulls GPIO LOW — code uses <code style="color:var(--green)">digitalRead() == LOW</code> to detect
+          press.</p>
+      </div>
+
+      <div class="note-card tip">
+        <div class="note-title">🌐 Required Arduino Libraries</div>
+        <ul>
+          <li>Adafruit SSD1306</li>
+          <li>Adafruit GFX Library</li>
+          <li>RTClib (by Adafruit)</li>
+          <li>ArduinoJson (v6+)</li>
+        </ul>
+      </div>
+
+      <div class="note-card">
+        <div class="note-title">⏰ Time Sync Flow</div>
+        <ul>
+          <li>Boot → connect WiFi</li>
+          <li>Fetch NTP time → write to RTC</li>
+          <li>All time reads from RTC (reliable, even offline)</li>
+          <li>Weather refreshes every 10 min</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>INTERNET CLOCK · ESP32 IoT PROJECT · CIRCUIT REFERENCE v1.0</footer>
+
+</body>
+
+</html>
