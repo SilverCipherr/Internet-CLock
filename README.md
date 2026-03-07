@@ -9,9 +9,7 @@
 [![Build](https://img.shields.io/badge/Build-PlatformIO-orange?logo=platformio)](https://platformio.org/)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-<video src="Inter Clock Demo.mp4" controls width="100%">
-  Your browser does not support the video tag.
-</video>
+![Internet Clock Demo](Inter%20Clock%20Demo.mp4)
 
 </div>
 
@@ -278,6 +276,6 @@ The T-Rex game engine is based on [t-rex-duino](https://github.com/dehre/t-rex-d
 
 <div align="center">
 
-Made with ❤️ by **Prottay** | Running on Arch btw 🐧
+Made with ❤️ by **Prottay** | Running on Arch 🐧
 
 </div>
