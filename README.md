@@ -33,7 +33,7 @@
 
 ## 🎬 Demo
 
-The [demo video](demo.mp4) shows all 9 screens in action — clock, weather, stopwatch, Eid countdown, news scroll, forecast chart, T-Rex game, eye animations, and the Arch screen.
+The [demo video](demo.mp4) shows all 9 screens in action — clock, weather, stopwatch, Eid countdown, news scroll, forecast chart, T-Rex game, eye animations, and the Arch screen. Please download the video if github failed to load it.
 
 ---
 

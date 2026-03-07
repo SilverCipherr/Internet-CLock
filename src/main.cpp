@@ -304,16 +304,36 @@ void connectWiFi() {
 //  NTP → RTC
 // ─────────────────────────────────────────────
 void syncTimeNTP() {
-  configTime(GMT_OFFSET_SEC, DAYLIGHT_OFFSET, NTP_SERVER);
+  // Use multiple servers for better reliability
+  configTime(GMT_OFFSET_SEC, DAYLIGHT_OFFSET, "pool.ntp.org", "time.google.com", "time.nist.gov");
+  
   struct tm t;
   int tries = 0;
-  while (!getLocalTime(&t) && tries < 10) { delay(1000); tries++; }
-  if (tries < 10) {
-    rtc.adjust(DateTime(t.tm_year+1900, t.tm_mon+1, t.tm_mday,
+  bool synced = false;
+  
+  Serial.println("Starting NTP sync...");
+  while (tries < 20) { // 20 attempts
+    if (getLocalTime(&t)) {
+      Serial.printf("NTP Year check: %d\n", t.tm_year + 1900);
+      if (t.tm_year + 1900 >= 2024) {
+        synced = true;
+        break;
+      }
+    }
+    delay(1000);
+    tries++;
+    Serial.print(".");
+  }
+
+  if (synced) {
+    rtc.adjust(DateTime(t.tm_year + 1900, t.tm_mon + 1, t.tm_mday,
                         t.tm_hour, t.tm_min, t.tm_sec));
-    Serial.println("RTC synced from NTP");
+    Serial.println("\nRTC synced successfully!");
+    showMessage("Time Sync\nSUCCESS!");
   } else {
-    Serial.println("NTP sync failed");
+    Serial.println("\nNTP sync FAILED - Year stays 2000.");
+    showMessage("Time Sync\nFAILED!");
+    delay(1500); // Give user time to see the failure
   }
 }
 
