@@ -9,7 +9,7 @@
 [![Build](https://img.shields.io/badge/Build-PlatformIO-orange?logo=platformio)](https://platformio.org/)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-![Internet Clock Demo](Inter%20Clock%20Demo.mp4)
+[Inter Clock Demo](demo.mp4)
 
 </div>
 
@@ -33,7 +33,7 @@
 
 ## 🎬 Demo
 
-The demo video above shows all 9 screens in action — clock, weather, stopwatch, Eid countdown, news scroll, forecast chart, T-Rex game, eye animations, and the Arch screen.
+The [demo video](demo.mp4) shows all 9 screens in action — clock, weather, stopwatch, Eid countdown, news scroll, forecast chart, T-Rex game, eye animations, and the Arch screen.
 
 ---
 
