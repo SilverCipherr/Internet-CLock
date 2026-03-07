@@ -9,7 +9,6 @@
 [![Build](https://img.shields.io/badge/Build-PlatformIO-orange?logo=platformio)](https://platformio.org/)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-[Inter Clock Demo](demo.mp4)
 
 </div>
 
@@ -95,7 +94,7 @@ Clock → Weather → Stopwatch → Eid Countdown → News → Forecast → T-Re
 ### 2. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/internet-clock.git
+git clone hhttps://github.com/SilverCipherr/Internet-CLock.git
 cd internet-clock
 ```
 
@@ -269,7 +268,7 @@ The T-Rex game engine is based on [t-rex-duino](https://github.com/dehre/t-rex-d
 - **T-Rex Game Engine** — ported from [t-rex-duino](https://github.com/dehre/t-rex-duino)
 - **Weather & Forecast** — [OpenWeatherMap API](https://openweathermap.org/api)
 - **News** — [BBC World News RSS](https://feeds.bbci.co.uk/news/world/rss.xml) via [rss2json.com](https://rss2json.com)
-- **NTP Sync** — `pool.ntp.org`
+- **NTP Sync** — `pool.ntp.org` `time.google.com` `time.nist.gov`
 - **Built with** — [PlatformIO](https://platformio.org/) + Arduino framework
 
 ---
