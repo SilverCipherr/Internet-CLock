@@ -47,21 +47,21 @@
 // ─────────────────────────────────────────────
 //  USER CONFIGURATION  ← edit these
 // ─────────────────────────────────────────────
-const char* WIFI_SSID      = "Prottay";
-const char* WIFI_PASSWORD  = "prottay3698";
+const char* WIFI_SSID      = "Your_WiFi_SSID";
+const char* WIFI_PASSWORD  = "Your_WiFi_Password";
 
-const char* OWM_API_KEY    = "c020ea210d6203ca9c8f225f5995d45f";
-const char* CITY_NAME      = "Dhaka";
-const char* COUNTRY_CODE   = "BD";
+const char* OWM_API_KEY    = "Your_OpenWeatherMap_API_Key";
+const char* CITY_NAME      = "Your_City_Name";
+const char* COUNTRY_CODE   = "Your_Country_Code";
 
 const char* NTP_SERVER     = "pool.ntp.org";
-const long  GMT_OFFSET_SEC = 6 * 3600;   // UTC+6 Bangladesh
+const long  GMT_OFFSET_SEC = Your_GMT_Offset_SEC * 3600;
 const int   DAYLIGHT_OFFSET = 0;
 
 // ── Eid ul-Fitr target date ── update each year ──
 const int EID_YEAR  = 2026;
 const int EID_MONTH = 3;
-const int EID_DAY   = 20;
+const int EID_DAY   = 21;
 
 // ─────────────────────────────────────────────
 //  HARDWARE PINS

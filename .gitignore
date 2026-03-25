@@ -8,3 +8,8 @@ fix_main.py
 .vscode
 test
 tempCodeRunnerFile.h
+.gitignore
+.qodo
+lib
+include
+.vscode
